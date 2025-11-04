@@ -1,0 +1,15 @@
+<div>
+  <div>
+    <div class="center">
+      <div>{{ title }}</div>
+    </div>
+    <div class="split">
+      @for (kpi of kpis; track $index) {
+      <div>
+        <p>{{ kpi.label }}</p>
+        <p>{{ kpi.value }}</p>
+      </div>
+      }
+    </div>
+  </div>
+</div>
