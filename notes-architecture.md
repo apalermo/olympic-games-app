@@ -56,6 +56,17 @@ Cette section couvre les problèmes de lisibilité et les "code smells" qui dég
 - **Constat :** Le type `any` est utilisé à plusieurs reprises (par exemple, pour les données des graphiques).
 - **Impact :** Cela désactive la vérification de type de TypeScript, ce qui annule l'un des principaux avantages d'Angular. Le risque d'erreurs à l'exécution (ex: `cannot read property 'name' of undefined`) est très élevé.
 
+### Conversions de type inutiles
+
+- **Constat :** Par exemple dans `country.component.ts`, le `medalsCount` (un `number`) est converti en `string` (`.toString()`) lors du `map`, pour être ensuite re-converti en `number` (`parseInt()`) lors du `reduce` pour calculer le total.
+- **Impact :** Code inefficace (coût de conversions inutiles), illisible, et force l'utilisation d'un type `string` ou `any` dans le `reduce`, ce qui nuit à la robustesse du code.
+- **Solution suggérée :** Supprimer la conversion `.toString()` et effectuer le `reduce` directement sur le `number[]`.
+
+### Noms de variables confus
+
+- **Constat :** Les noms de variables sont souvent peu clairs ou réutilisés dans des contextes différents (ex: `i` utilisé pour un `Olympic` puis pour un `number[]` dans `home.component.ts`).
+- **Impact :** Rend le code très difficile à lire, à comprendre et à déboguer. C'est une source directe de confusion pour le typage.
+
 ### Duplication de logique métier (Non DRY)
 
 - **Constat :** Les fonctions `buildChart()` (dans `home.component.ts`) et `buildPieChart()` (dans `country.component.ts`) sont très similaires.
