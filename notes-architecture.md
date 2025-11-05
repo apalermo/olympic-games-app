@@ -35,11 +35,6 @@ Cette section concerne l'organisation des fichiers et des dossiers.
   - **Manque de typage strict :** Conduit à l'utilisation de `any` (voir point suivant).
   - **Manque de clarté :** Le format des données n'est pas clair, ce qui complique le développement et la maintenance.
 
-### Nommage des composants de page
-
-- **Constat :** Les composants racines des routes sont nommés `home` et `country`.
-- **Impact :** Le nommage est générique. Une convention plus claire serait de les suffixer en `...Page` ou `...View` (ex: `DashboardPage`, `CountryDetailPage`) pour les distinguer des composants de présentation réutilisables.
-
 ### Absence d'un `HeaderComponent`
 
 - **Constat :** Le header n'est pas un composant dédié.
@@ -94,14 +89,14 @@ Cette section couvre les problèmes de lisibilité et les "code smells" qui dég
 - **Impact :** Cela rend le code plus verbeux et redondant, allant à l'encontre des conventions modernes de TypeScript.
 - **Solution suggérée :** Se reposer sur l'inférence de type pour les variables initialisées (ex: `variable = ''`).
 
-### Composant `NotFoundComponent` inachevé
-
-- **Constat :** La classe `NotFoundComponent` est vide.
-- **Impact :** La fonctionnalité de "page non trouvée" n'est pas implémentée, ce qui nuit à l'expérience utilisateur.
-
 ---
 
 ## 4. Non-conformité avec le Cahier des Charges
+
+### Nommage des composants de page
+
+- **Constat :** Les composants racines des routes sont nommés `home` et `country` alors qu'il sont nommés `dashboard` et `detail` .
+- **Impact :** Cela rendre le développment confus.
 
 ### Paramètre de route incorrect
 
@@ -121,7 +116,7 @@ La nouvelle architecture s'articulera autour de trois principes fondamentaux :
 1.  **Séparation des Responsabilités (SoC) :** Le code sera divisé par fonctionnalité (pages, composants réutilisables, services, modèles).
 2.  **Pattern "Smart/Dumb Components" :**
     - **`pages/` (Smart) :** Composants (conteneurs) qui gèrent la logique d'une page. Ils s'abonnent aux services pour récupérer et envoyer des données.
-    - **`components/` (Dumb) :** Composants (de présentation) réutilisables. Ils se contentent d'afficher les données reçues via `@Input()` et d'émettre des événements via `@Output()`. Ils n'ont pas connaissance des services.
+    - **`components/` (Dumb) :** Composants (de présentation) réutilisables. Ils se contentent d'afficher les données reçues via `input()` et d'émettre des événements via `output()`. Ils n'ont pas connaissance des services.
 3.  **Pattern "Singleton" pour les Services :**
     - **`services/` :** Toute la logique métier et l'accès aux données seront centralisés ici. En utilisant `providedIn: 'root'`, chaque service sera un Singleton (une seule instance pour toute l'application), garantissant une source de vérité unique.
 
