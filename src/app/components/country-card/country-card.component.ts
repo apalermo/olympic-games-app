@@ -1,39 +1,32 @@
-import { AfterViewInit, Component, effect, input } from '@angular/core';
+import { Component, effect, input } from '@angular/core';
 import Chart from 'chart.js/auto';
 
 @Component({
   selector: 'app-country-card',
   standalone: true,
-  imports: [],
   templateUrl: './country-card.component.html',
   styleUrl: './country-card.component.scss',
 })
-export class CountryCardComponent implements AfterViewInit {
+export class CountryCardComponent {
   public years = input<number[]>();
-  public medals = input<string[]>();
-  public lineChart!: Chart<'line', string[], number>;
+  public medals = input<number[]>();
+  public lineChart!: Chart<'line', number[], number>;
   constructor() {
     effect(() => {
-      const currentYears = this.years();
-      const currentMedals = this.medals();
+      const currentYears: number[] = this.years() || [];
+      const currentMedals: number[] = this.medals() || [];
 
       if (this.lineChart && currentYears && currentMedals) {
         this.lineChart.data.labels = currentYears;
         this.lineChart.data.datasets[0].data = currentMedals;
         this.lineChart.update();
+      } else if (currentYears && currentMedals && currentYears.length > 0) {
+        this.buildChart(currentYears, currentMedals);
       }
     });
   }
 
-  ngAfterViewInit(): void {
-    const currentYears = this.years();
-    const currentMedals = this.medals();
-
-    if (currentYears && currentMedals && currentYears.length > 0) {
-      this.buildChart(currentYears, currentMedals);
-    }
-  }
-  buildChart(years: number[], medals: string[]) {
+  buildChart(years: number[], medals: number[]) {
     const lineChart = new Chart('countryChart', {
       type: 'line',
       data: {

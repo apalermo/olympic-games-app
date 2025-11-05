@@ -1,2 +1,5 @@
-<app-header-component />
-<app-country-card></app-country-card>
+<app-header-component [title]="titlePage" [kpis]="kpis" />
+<app-country-card [medals]="chartMedalsData" [years]="chartYearsData" />
+<div class="center">
+  <a routerLink="/">Go back</a>
+</div>

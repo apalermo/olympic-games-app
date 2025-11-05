@@ -1,23 +1,22 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, ParamMap, RouterLink } from '@angular/router';
+import { map } from 'rxjs/internal/operators/map';
+import { switchMap } from 'rxjs/internal/operators/switchMap';
 import { CountryCardComponent } from 'src/app/components/country-card/country-card.component';
 import { HeaderComponent } from 'src/app/components/header/header.component';
-import { Olympic } from 'src/app/models/Olympic';
-import { Participation } from 'src/app/models/Participation';
+import { KPI } from 'src/app/models/KPI';
 import { DataService } from 'src/app/services/data.service';
 
 @Component({
   selector: 'app-detail',
   templateUrl: './detail.component.html',
   standalone: true,
-  imports: [HeaderComponent, CountryCardComponent],
+  imports: [HeaderComponent, CountryCardComponent, RouterLink],
   styleUrls: ['./detail.component.scss'],
 })
 export class DetailComponent implements OnInit {
   public titlePage = '';
-  public totalEntries = 0;
-  public totalMedals = 0;
-  public totalAthletes = 0;
+  public kpis: KPI[] = [];
   public error!: string;
   public chartYearsData: number[] = [];
   public chartMedalsData: number[] = [];
@@ -26,50 +25,35 @@ export class DetailComponent implements OnInit {
   private dataService = inject(DataService);
 
   ngOnInit() {
-    let countryName: string | null = null;
-    this.route.paramMap.subscribe(
-      (param: ParamMap) => (countryName = param.get('countryName'))
-    );
-    this.dataService
-      .getOlympic()
-      .pipe()
+    this.route.paramMap
+      .pipe(
+        map((params: ParamMap) => {
+          const countryId = params.get('id');
+          if (!countryId) {
+            throw new Error('Country ID missing or invalid');
+          }
+          return Number(countryId);
+        }),
+
+        switchMap((countryId: number) => {
+          return this.dataService.getDetailData(countryId);
+        })
+      )
       .subscribe({
         next: (data) => {
-          if (data && data.length > 0) {
-            const selectedCountry = data.find(
-              (i: Olympic) => i.country === countryName
-            );
-            this.titlePage = selectedCountry?.country || '';
-            const participations = selectedCountry?.participations.map(
-              (i: Participation) => i
-            );
-            this.totalEntries = participations?.length ?? 0;
-            const years =
-              selectedCountry?.participations.map(
-                (i: Participation) => i.year
-              ) ?? [];
-            const medals =
-              selectedCountry?.participations.map(
-                (i: Participation) => i.medalsCount
-              ) ?? [];
-            this.totalMedals = medals.reduce(
-              (accumulator: number, item: number) => accumulator + item,
-              0
-            );
-            const nbAthletes =
-              selectedCountry?.participations.map(
-                (i: Participation) => i.athleteCount
-              ) ?? [];
-            this.totalAthletes = nbAthletes.reduce(
-              (accumulator: number, item: number) => accumulator + item,
-              0
-            );
-            this.chartYearsData = years;
-            this.chartMedalsData = medals;
+          if (data) {
+            this.titlePage = data.title;
+            this.kpis = data.kpis;
+            this.chartYearsData = data.chartData.years;
+            this.chartMedalsData = data.chartData.medals;
+          } else {
+            this.error = 'Data not found for this country.';
+            // TODO: Gérer la redirection vers /not-found
           }
         },
-        error: (error) => {
-          this.error = error.message;
+        error: (err) => {
+          this.error = err.message;
+          // TODO: Gérer la redirection vers /not-found
         },
       });
   }

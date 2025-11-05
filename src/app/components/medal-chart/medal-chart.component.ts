@@ -30,7 +30,7 @@ export class MedalChartComponent {
   }
 
   buildPieChart(countries: string[], sumOfAllMedalsYears: number[]) {
-    const pieChart = new Chart('DashboardPieChart', {
+    const pieChart = new Chart('dashboardPieChart', {
       type: 'pie',
       data: {
         labels: countries,
