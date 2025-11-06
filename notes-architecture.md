@@ -95,8 +95,9 @@ Cette section couvre les problèmes de lisibilité et les "code smells" qui dég
 
 ### Nommage des composants de page
 
-- **Constat :** Les composants racines des routes sont nommés `home` et `country` alors qu'il sont nommés `dashboard` et `detail` .
-- **Impact :** Cela rendre le développment confus.
+- **Constat :** Les composants racines des routes sont nommés `home` et `country` alors qu'il sont nommés `dashboard` et `detail` dans le cahier des charges.
+- **Impact :** Cela rend le développment confus.
+- **Solution suggérée :** Respecter le nommage du cahier des charges pour éviter toute confusion.
 
 ### Paramètre de route incorrect
 
@@ -168,6 +169,5 @@ Cette structure résout les problèmes de l'audit initial :
 
 - **Anti-patterns résolus :** Les appels HTTP seront retirés des composants et placés dans `data.service.ts`.
 - **Qualité du code :** Le typage `any` sera remplacé par les interfaces de `models/`.
-- **DRY (Don't Repeat Yourself) :** La logique des graphiques sera centralisée dans `chart.service.ts`.
 - **Lisibilité :** La structure de dossiers est claire et suit les conventions Angular.
 - **Préparation à l'API :** L'intégration d'un back-end réel devient simple. Il suffira de modifier le service `data.service.ts` pour remplacer les données "mockées" par de réels appels `HttpClient`. Aucun composant ne sera impacté par ce changement, car ils dépendent du service, et non de la source des données.
