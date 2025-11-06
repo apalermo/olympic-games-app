@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map, shareReplay } from 'rxjs/operators';
 import { Olympic } from '../models/Olympic';
 import { KPI } from '../models/KPI';
 
@@ -33,6 +33,12 @@ export class DataService {
   private olympicUrl = './assets/mock/olympic.json';
 
   private olympics$ = this.http.get<Olympic[]>(this.olympicUrl).pipe(
+    catchError((error: HttpErrorResponse) => {
+      console.error('An error occurred loading the data:', error.message);
+      return throwError(
+        () => new Error('Failed to load data; please try again later.')
+      );
+    }),
     shareReplay(1) // mise en cache ( penser à gérer le refresh quand on pointera sur une vraie API )
   );
 

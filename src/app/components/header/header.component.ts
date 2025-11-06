@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { KPI } from 'src/app/models/KPI';
 
 @Component({
@@ -8,6 +8,6 @@ import { KPI } from 'src/app/models/KPI';
   styleUrl: './header.component.scss',
 })
 export class HeaderComponent {
-  @Input() title = '';
-  @Input() kpis: KPI[] = [];
+  public title = input<string>();
+  public kpis = input<KPI[]>([]);
 }

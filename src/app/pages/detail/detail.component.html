@@ -1,5 +1,20 @@
+@if (isLoading) {
+<!-- 1. ÉTAT DE CHARGEMENT -->
+<div class="state-container">
+  <span class="loader"></span>
+  <p>Loading data...</p>
+</div>
+} @else if (errorMsg) {
+<!-- 3. ÉTAT D'ERREUR -->
+<div class="state-container error">
+  <h3>Error during data loading, please try later</h3>
+  <a routerLink="/">Go back</a>
+</div>
+} @else {
+<!-- 3. ÉTAT DE SUCCÈS -->
 <app-header-component [title]="titlePage" [kpis]="kpis" />
 <app-country-card [medals]="chartMedalsData" [years]="chartYearsData" />
 <div class="center">
   <a routerLink="/">Go back</a>
 </div>
+}

@@ -1,6 +1,27 @@
-<app-header-component [title]="titlePage" [kpis]="kpis" />
+@if (data$ | async; as data) {
+<!-- 'data' existe (pas d'erreur). On vérifie s'il est vide. -->
+@if (data.chartData.countries.length > 0) {
+<!-- 1. ÉTAT DE SUCCÈS -->
+<app-header-component [title]="titlePage" [kpis]="data.kpis" />
 <app-medal-chart
-  [countries]="countries"
-  [sumOfAllMedalsYears]="sumOfAllMedalsYears"
-  [countryIds]="countryIds"
+  [countries]="data.chartData.countries"
+  [sumOfAllMedalsYears]="data.chartData.sumOfMedals"
+  [countryIds]="data.chartData.countryIds"
 />
+} @else {
+<!-- 2. ÉTAT VIDE -->
+<div class="state-container">
+  <p>No data</p>
+</div>
+} } @else if (errorMsg) {
+<!-- 3. ÉTAT D'ERREUR -->
+<div class="state-container error">
+  <h3>Error during data loading, please try later</h3>
+</div>
+} @else {
+<!-- 4. ÉTAT DE CHARGEMENT -->
+<div class="state-container">
+  <span class="loader"></span>
+  <p>Loading data...</p>
+</div>
+}

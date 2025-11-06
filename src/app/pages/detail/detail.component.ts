@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap, RouterLink } from '@angular/router';
-import { map } from 'rxjs/internal/operators/map';
-import { switchMap } from 'rxjs/internal/operators/switchMap';
+import { ActivatedRoute, ParamMap, RouterLink, Router } from '@angular/router';
+import { of } from 'rxjs/internal/observable/of';
+import { catchError, switchMap, map } from 'rxjs/operators';
 import { CountryCardComponent } from 'src/app/components/country-card/country-card.component';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 import { KPI } from 'src/app/models/KPI';
@@ -15,13 +15,18 @@ import { DataService } from 'src/app/services/data.service';
   styleUrls: ['./detail.component.scss'],
 })
 export class DetailComponent implements OnInit {
+  // gestion des états
+  public isLoading = true;
+  public errorMsg: string | null = null;
+
   public titlePage = '';
   public kpis: KPI[] = [];
-  public error!: string;
+
   public chartYearsData: number[] = [];
   public chartMedalsData: number[] = [];
 
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private dataService = inject(DataService);
 
   ngOnInit() {
@@ -37,23 +42,24 @@ export class DetailComponent implements OnInit {
 
         switchMap((countryId: number) => {
           return this.dataService.getDetailData(countryId);
+        }),
+        catchError((err) => {
+          this.errorMsg = err.message;
+          this.isLoading = false;
+          return of(null);
         })
       )
       .subscribe({
         next: (data) => {
+          this.isLoading = false;
           if (data) {
             this.titlePage = data.title;
             this.kpis = data.kpis;
             this.chartYearsData = data.chartData.years;
             this.chartMedalsData = data.chartData.medals;
           } else {
-            this.error = 'Data not found for this country.';
-            // TODO: Gérer la redirection vers /not-found
+            this.router.navigate(['not-found']);
           }
-        },
-        error: (err) => {
-          this.error = err.message;
-          // TODO: Gérer la redirection vers /not-found
         },
       });
   }
