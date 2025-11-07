@@ -1,4 +1,4 @@
-# Télésport - Application des Statistiques des Jeux Olympiques
+# Télésport - Application de statistiques sur les Jeux Olympiques.
 
 Ce projet est une application Angular (v18+) développée dans le cadre de la formation OpenClassrooms Développeur Full-Stack - Java et Angular. Cette dernière affiche les statistiques des médailles des Jeux Olympiques par pays et permet de naviguer pour voir le détail de chaque pays.
 
