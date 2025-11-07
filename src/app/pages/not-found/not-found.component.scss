@@ -1,8 +1,25 @@
-.center {
-  width: 100vw;
-  height: 100vh;
+
+.not-found-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
+  padding: 4rem;
+  text-align: center;
+  color: #555;
+  min-height: 300px;
+  background-color: #f9f9f9;
+  border: 1px solid #eee;
+  border-radius: 8px;
+
+  h2 {
+    
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
 }

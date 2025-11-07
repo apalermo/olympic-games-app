@@ -1,0 +1,14 @@
+app-medal-chart {
+  display: block; 
+  width: 80%; 
+  max-width: 800px; 
+  margin: 1rem auto; 
+}
+
+/*  Tablette (≤ 1199px) -> "graphe pleine largeur"
+*/
+@media (max-width: 1199px) {
+  app-medal-chart {
+    width: 100%;
+  }
+}
