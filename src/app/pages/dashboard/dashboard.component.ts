@@ -29,7 +29,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.data$ = this.dataService.getDashboardData().pipe(
       catchError((err) => {
-        // Si le service jette une erreur, on l'attrape
+        // Si le service revoie une erreur, on l'attrape
         this.errorMsg = err.message || 'An unknown error occurred';
         return of(null); // On retourne un observable 'null' pour que l'UI réagisse
       })

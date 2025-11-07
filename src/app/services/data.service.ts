@@ -5,7 +5,7 @@ import { catchError, map, shareReplay } from 'rxjs/operators';
 import { Olympic } from '../models/Olympic';
 import { KPI } from '../models/KPI';
 
-// C'est le "ViewModel" propre que le Dashboard recevra
+// "ViewModel" propre que le Dashboard recevra
 export interface DashboardData {
   kpis: KPI[];
   chartData: {
@@ -15,7 +15,7 @@ export interface DashboardData {
   };
 }
 
-// C'est le "ViewModel" propre que le Detail recevra
+// "ViewModel" propre que le Detail recevra
 export interface DetailData {
   title: string;
   kpis: KPI[];
