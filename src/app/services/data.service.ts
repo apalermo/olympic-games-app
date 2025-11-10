@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map, shareReplay } from 'rxjs/operators';
 import { Olympic } from '../models/Olympic';
@@ -33,8 +33,7 @@ export class DataService {
   private olympicUrl = './assets/mock/olympic.json';
 
   private olympics$ = this.http.get<Olympic[]>(this.olympicUrl).pipe(
-    catchError((error: HttpErrorResponse) => {
-      console.error('An error occurred loading the data:', error.message);
+    catchError(() => {
       return throwError(
         () => new Error('Failed to load data; please try again later.')
       );
