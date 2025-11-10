@@ -2,10 +2,11 @@ import { Component, inject, OnInit } from '@angular/core';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 import { DashboardData, DataService } from 'src/app/services/data.service';
 import { MedalChartComponent } from 'src/app/components/medal-chart/medal-chart.component';
-import { KPI } from 'src/app/models/KPI';
 import { Observable } from 'rxjs/internal/Observable';
-import { catchError, of } from 'rxjs';
+import { catchError, map, of } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
+import { Olympic } from 'src/app/models/Olympic';
+import { Participation } from 'src/app/models/Participation';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,22 +18,51 @@ import { AsyncPipe } from '@angular/common';
 export class DashboardComponent implements OnInit {
   private dataService = inject(DataService);
   public data$!: Observable<DashboardData | null>;
-  public isLoading = true;
   public errorMsg = '';
-  public isEmpty = false;
-  public sumOfAllMedalsYears: number[] = [];
   public titlePage = 'Medals per Country';
-  public kpis: KPI[] = [];
-  public countries: string[] = [];
-  public countryIds: number[] = [];
 
   ngOnInit() {
-    this.data$ = this.dataService.getDashboardData().pipe(
+    this.data$ = this.dataService.getOlympics().pipe(
+      map((rawData: Olympic[]) => {
+        return this.formatDashboard(rawData);
+      }),
+
       catchError((err) => {
-        // Si le service revoie une erreur, on l'attrape
         this.errorMsg = err.message || 'An unknown error occurred';
-        return of(null); // On retourne un observable 'null' pour que l'UI réagisse
+        return of(null);
       })
     );
+  }
+
+  /**
+   * formatte les données pour le dashboard
+   */
+  private formatDashboard(data: Olympic[]): DashboardData {
+    const totalJOs = Array.from(
+      new Set(data.map((i) => i.participations.map((f) => f.year)).flat())
+    ).length;
+    const totalCountries = data.length;
+    const kpis = [
+      { label: 'Number of JOs', value: totalJOs },
+      { label: 'Number of Countries', value: totalCountries },
+    ];
+
+    const countries = data.map((i) => i.country);
+    const countryIds = data.map((i) => i.id);
+    const sumOfMedals = data.map((i) =>
+      i.participations.reduce(
+        (acc: number, p: Participation) => acc + p.medalsCount,
+        0
+      )
+    );
+
+    return {
+      kpis: kpis,
+      chartData: {
+        countries: countries,
+        sumOfMedals: sumOfMedals,
+        countryIds: countryIds,
+      },
+    };
   }
 }
